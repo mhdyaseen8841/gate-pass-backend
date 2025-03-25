@@ -7,6 +7,7 @@ import cookieParser from "cookie-parser";
 import { createServer } from "http";
 import rateLimit from "express-rate-limit";
 import visitorReportsRouter from "./routes/visitorReportsRoute.js";
+import loginRouter from "./routes/loginRoute.js";
 
 const PORT = process.env.PORT || 4000;
 const app = express();
@@ -67,5 +68,6 @@ app.get("/", (req, res) => {
 });
 
 app.use("/api", visitorReportsRouter);
+app.use("/api/user", loginRouter)
 
 export default app;

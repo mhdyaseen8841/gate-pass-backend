@@ -3,6 +3,7 @@ import { Request, TYPES } from "tedious";
 import connectDB from "../config/connection.js";
 import { generateAccessToken } from "../utils/generateToken.js";
 import {decryptPassword} from "../utils/decrypt.js";
+
 const createUser = AsyncHandler(async (req, res) => {
     let pool = await connectDB();
     if (!pool) {
