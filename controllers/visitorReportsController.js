@@ -10,7 +10,7 @@ const createReport = AsyncHandler(async (req, res) => {
       return res.status(500).send("Database connection not available");
     }
 
-    const { visitor_name, address, email, phone, company, person_to_visit, purpose, remarks, user, photo } = req.body;
+    const { visitor_name, address, email, phone, company, person_to_visit, purpose, remarks, photo } = req.body;
 
     try {
       await pool.connect();
@@ -23,7 +23,7 @@ const createReport = AsyncHandler(async (req, res) => {
           .input('person_to_visit', person_to_visit)
           .input('purpose', purpose)
           .input('remarks', remarks)
-          .input('user', user)
+          .input('user',  req.user.userName || "")
           .input('photo', photo)
           .execute(`visit_entry`);
       const employees = result.recordset;
@@ -99,7 +99,7 @@ const getCurrentVisitor = AsyncHandler(async (req, res) => {
 
 const visitorCheckout = AsyncHandler(async (req, res) => {
 
-  const { user, visit_id  } = req.body;
+  const { visit_id  } = req.body;
   let pool = await connectDB();
   if (!pool) {
     return res.status(500).send("Database connection not available");
@@ -107,7 +107,7 @@ const visitorCheckout = AsyncHandler(async (req, res) => {
   try {
     await pool.connect();
     const result = await pool.request()
-       .input('user', user)
+        .input('user',  req.user.userName || "")
         .input('visit_id', visit_id)
        .execute(`visit_checkout`);
     const employees = result.recordset;

@@ -1,6 +1,6 @@
 import jwt from 'jsonwebtoken'
 import AsyncHandler from 'express-async-handler'
-import User from '../modals/userModal.js';
+
 
 import { generateAccessToken } from '../utils/generateToken.js';
 
@@ -9,7 +9,7 @@ const protect = AsyncHandler(async (req, res, next) => {
   try {
     token = req.headers.authorization.split(' ')[1];
     const decoded = jwt.verify(token, process.env.JWT_ACCESS_SECRET);
-    req.user = await User.findById(decoded.id).select('-password')
+    req.user = decoded.user
 
     if (req.user === undefined) {
       res.status(401).json({ msg: 'No user found..' })
