@@ -10,21 +10,22 @@ const createReport = AsyncHandler(async (req, res) => {
       return res.status(500).send("Database connection not available");
     }
 
-    const { visitor_name, address, email, phone, company, person_to_visit, purpose, remarks, photo } = req.body;
+    const { name, address, email, phone, company, personToVisit, purpose, remarks, image,visitorType } = req.body;
 
     try {
       await pool.connect();
       const result = await pool.request()
-          .input('visitor_name', visitor_name)
+          .input('visitor_name', name)
           .input('address', address)
           .input('email', email)
           .input('phone', phone)
           .input('company', company)
-          .input('person_to_visit', person_to_visit)
+          .input('person_to_visit', personToVisit)
           .input('purpose', purpose)
+          .input('visitor_type', visitorType)
           .input('remarks', remarks)
-          .input('user',  req.user.userName || "")
-          .input('photo', photo)
+          .input('user',  req.user?.display_name || "")
+          .input('photo', image)
           .execute(`visit_entry`);
       const employees = result.recordset;
 
@@ -107,7 +108,7 @@ const visitorCheckout = AsyncHandler(async (req, res) => {
   try {
     await pool.connect();
     const result = await pool.request()
-        .input('user',  req.user.userName || "")
+        .input('user',  req.user?.display_name || "")
         .input('visit_id', visit_id)
        .execute(`visit_checkout`);
     const employees = result.recordset;

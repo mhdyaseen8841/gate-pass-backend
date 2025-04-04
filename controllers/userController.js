@@ -10,18 +10,16 @@ const createUser = AsyncHandler(async (req, res) => {
       return res.status(500).send("Database connection not available");
     }
 
-    const { user_name, address, email, phone, company, psw} = req.body;
+    const { user_name, display_name, emp_id, user_password} = req.body;
 
     try {
       await pool.connect();
       const result = await pool.request()
           .input('user_name', user_name)
-          .input('address', address)
-          .input('email', email)
-          .input('phone', phone)
-          .input('company', company)
-          .input('password', psw)
-          .execute(`create_user`);
+          .input('display_name', display_name)
+          .input('emp_id', emp_id)
+          .input('user_password', user_password)
+          .execute(`user_entry`);
       const user = result.recordset;
 
       res.json(user);
@@ -50,7 +48,7 @@ const userLogin = AsyncHandler(async (req, res) => {
         return res.status(401).json({ message: "Invalid username or password" });
       }
       res.json({
-        accessToken: generateAccessToken(user._id),
+        accessToken: generateAccessToken(user.user_id,user.display_name),
         user
       });
   } catch (error) {
