@@ -1,9 +1,9 @@
-import sql from "mssql";  // ✅ Correct way to import CommonJS in ES modules
+import sql from "mssql";  
 import dotenv from "dotenv";
 
 dotenv.config();
 
-const { ConnectionPool } = sql;  // Extract ConnectionPool
+const { ConnectionPool } = sql;  
 
 // Database connection pool configuration
 const config = {
