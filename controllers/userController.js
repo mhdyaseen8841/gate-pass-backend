@@ -4,8 +4,16 @@ import connectDB from "../config/connection.js";
 import { generateAccessToken } from "../utils/generateToken.js";
 import {decryptPassword} from "../utils/decrypt.js";
 
+const getDBPool = async () => {
+  let pool = await connectDB();
+  if (!pool) {
+      throw new Error("Database connection not available");
+  }
+  return pool;
+}
+
 const createUser = AsyncHandler(async (req, res) => {
-    let pool = await connectDB();
+    let pool = await getDBPool();
     if (!pool) {
       return res.status(500).send("Database connection not available");
     }
@@ -30,7 +38,7 @@ const createUser = AsyncHandler(async (req, res) => {
 
 const userLogin = AsyncHandler(async (req, res) => {
 
-    let pool = await connectDB();
+    let pool = await getDBPool();
     if (!pool) {
       return res.status(500).send("Database connection not available");
     }
@@ -59,7 +67,7 @@ const userLogin = AsyncHandler(async (req, res) => {
 
 
 const updatePassword = AsyncHandler(async (req, res) => {
-  let pool = await connectDB();
+  let pool = await getDBPool();
   if (!pool) {
     return res.status(500).send("Database connection not available");
   }
