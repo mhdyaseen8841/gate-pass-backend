@@ -1,11 +1,11 @@
 import sql from "mssql";  // ✅ Correct way to import CommonJS in ES modules
-
-const { ConnectionPool } = sql;  // Extract ConnectionPool
-
 import dotenv from "dotenv";
 
 dotenv.config();
 
+const { ConnectionPool } = sql;  // Extract ConnectionPool
+
+// Database connection pool configuration
 const config = {
   user: process.env.DB_USER,
   password: process.env.DB_PASSWORD,
@@ -22,17 +22,23 @@ const config = {
   },
 };
 
-const pool = new ConnectionPool(config);
+// Create and initialize the connection pool once
+let poolPromise;
 
-const connectDB = async () => {
-  try {
-    await pool.connect();
-    console.log("✅ Database connected successfully!");
-    return pool;
-  } catch (err) {
-    console.error("❌ Database Connection Failed!", err);
-    process.exit(1); // Exit the process if connection fails
+const connectDB = () => {
+  if (!poolPromise) {
+    
+    poolPromise = new ConnectionPool(config).connect()
+      .then(pool => {
+        console.log("✅ Database connected successfully!");
+        return pool;
+      })
+      .catch(err => {
+        console.error("❌ Database Connection Failed!", err);
+        process.exit(1); // Exit the process if connection fails
+      });
   }
+  return poolPromise; // Return the same pool for all subsequent requests
 };
 
 export default connectDB;
